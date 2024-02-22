@@ -9,6 +9,15 @@ class FontStyle {
   static const headlineSmall = TextStyle(
       fontSize: 24, fontWeight: FontWeight.w700, color: AppColors.colorBlack);
 
+  static const titleLarge = TextStyle(
+      fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.colorBlack);
+
+  static const titleMedium = TextStyle(
+      fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.colorBlack);
+
+  static const titleSmall = TextStyle(
+      fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.colorBlack);
+
   static const bodyLarge = TextStyle(
       fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.colorBlack);
   static const bodyMedium = TextStyle(
