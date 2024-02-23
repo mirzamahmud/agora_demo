@@ -38,14 +38,24 @@ class HomeController extends GetxController {
   }
 
   /// get all users
-  List<dynamic> userData = [];
+  List<UserModel> allUsers = [];
   getOtherUsers() async {
+    // final result = await firebaseFirestore.collection("users").get();
+
+    // final otherUsers =
+    //     result.docs.where((element) => element.id != user!.uid).toList();
+
+    // userData = otherUsers;
+
     final result = await firebaseFirestore.collection("users").get();
+    final usersData = result.docs
+        .map((e) => UserModel.fromMap(e))
+        .where((element) => element.userID != user!.uid)
+        .toList();
 
-    final otherUsers =
-        result.docs.where((element) => element.id != user!.uid).toList();
-
-    userData = otherUsers;
+    if (usersData.isNotEmpty) {
+      allUsers.addAll(usersData);
+    } else {}
   }
 
   /// for showing greetings

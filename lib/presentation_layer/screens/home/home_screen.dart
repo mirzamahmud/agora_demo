@@ -84,13 +84,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           physics: const BouncingScrollPhysics(),
                           child: Column(
                             children: List.generate(
-                                homeController.userData.length,
+                                homeController.allUsers.length,
                                 (index) => Container(
                                       width: MediaQuery.of(context).size.width,
                                       margin: EdgeInsetsDirectional.only(
                                           bottom: index ==
                                                   homeController
-                                                          .userData.length -
+                                                          .allUsers.length -
                                                       1
                                               ? 0
                                               : 12),
@@ -122,16 +122,47 @@ class _HomeScreenState extends State<HomeScreen> {
                                               ),
                                               const Gap(12),
                                               Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  Text(homeController
-                                                              .userData[index]
-                                                          ['username'] ??
-                                                      "")
+                                                  Text(
+                                                      homeController
+                                                              .allUsers[index]
+                                                              .username ??
+                                                          "",
+                                                      style: FontStyle.bodyLarge
+                                                          .copyWith(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600)),
+                                                  const Gap(4),
+                                                  Text(
+                                                    "${homeController.allUsers[index].dialCode}${homeController.allUsers[index].phoneNumber}",
+                                                    style: FontStyle.bodySmall
+                                                        .copyWith(
+                                                            color: AppColors
+                                                                .colorGrey),
+                                                  )
                                                 ],
                                               )
                                             ],
+                                          ),
+                                          IconButton(
+                                            onPressed: () {},
+                                            icon: Container(
+                                              padding:
+                                                  const EdgeInsetsDirectional
+                                                      .all(8),
+                                              alignment: Alignment.center,
+                                              decoration: const BoxDecoration(
+                                                  color: AppColors.colorGreen,
+                                                  shape: BoxShape.circle),
+                                              child: const Icon(Icons.call,
+                                                  size: 16,
+                                                  color: AppColors.colorWhite),
+                                            ),
                                           )
                                         ],
                                       ),
