@@ -1,4 +1,5 @@
 import 'package:agora_demo/application_layer/controllers/home/home_controller.dart';
+import 'package:agora_demo/core/route/app_route.dart';
 import 'package:agora_demo/core/utils/color/app_colors.dart';
 import 'package:agora_demo/core/utils/image/app_images.dart';
 import 'package:agora_demo/presentation_layer/ui/font_style.dart';
@@ -103,66 +104,112 @@ class _HomeScreenState extends State<HomeScreen> {
                                           borderRadius:
                                               BorderRadius.circular(12)),
                                       child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
                                         children: [
+                                          Expanded(
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  height: 48,
+                                                  width: 48,
+                                                  alignment: Alignment.center,
+                                                  decoration: const BoxDecoration(
+                                                      image: DecorationImage(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          image: AssetImage(
+                                                              AppImages
+                                                                  .demoProfileImage),
+                                                          fit: BoxFit.fill)),
+                                                ),
+                                                const Gap(8),
+                                                Expanded(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                          homeController
+                                                                  .allUsers[
+                                                                      index]
+                                                                  .username ??
+                                                              "",
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: FontStyle
+                                                              .bodyLarge
+                                                              .copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600)),
+                                                      const Gap(4),
+                                                      Text(
+                                                        "${homeController.allUsers[index].dialCode}${homeController.allUsers[index].phoneNumber}",
+                                                        style: FontStyle
+                                                            .bodySmall
+                                                            .copyWith(
+                                                                color: AppColors
+                                                                    .colorGrey),
+                                                      )
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          const Gap(12),
                                           Row(
                                             children: [
-                                              Container(
-                                                height: 48,
-                                                width: 48,
-                                                alignment: Alignment.center,
-                                                decoration: const BoxDecoration(
-                                                    image: DecorationImage(
-                                                        alignment:
-                                                            Alignment.center,
-                                                        image: AssetImage(AppImages
-                                                            .demoProfileImage),
-                                                        fit: BoxFit.fill)),
-                                              ),
-                                              const Gap(12),
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
+                                              IconButton(
+                                                onPressed: () => Get.toNamed(
+                                                    AppRoute.voiceCallScreen,
+                                                    arguments: [
                                                       homeController
-                                                              .allUsers[index]
-                                                              .username ??
-                                                          "",
-                                                      style: FontStyle.bodyLarge
-                                                          .copyWith(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600)),
-                                                  const Gap(4),
-                                                  Text(
-                                                    "${homeController.allUsers[index].dialCode}${homeController.allUsers[index].phoneNumber}",
-                                                    style: FontStyle.bodySmall
-                                                        .copyWith(
-                                                            color: AppColors
-                                                                .colorGrey),
-                                                  )
-                                                ],
+                                                          .allUsers[index]
+                                                          .username
+                                                    ]),
+                                                icon: Container(
+                                                  padding:
+                                                      const EdgeInsetsDirectional
+                                                          .all(8),
+                                                  alignment: Alignment.center,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                          color: AppColors
+                                                              .colorGreen,
+                                                          shape:
+                                                              BoxShape.circle),
+                                                  child: const Icon(Icons.call,
+                                                      size: 16,
+                                                      color:
+                                                          AppColors.colorWhite),
+                                                ),
+                                              ),
+                                              const Gap(4),
+                                              IconButton(
+                                                onPressed: () {},
+                                                icon: Container(
+                                                  padding:
+                                                      const EdgeInsetsDirectional
+                                                          .all(8),
+                                                  alignment: Alignment.center,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                          color: AppColors
+                                                              .colorOrange,
+                                                          shape:
+                                                              BoxShape.circle),
+                                                  child: const Icon(
+                                                      Icons.video_call,
+                                                      size: 16,
+                                                      color:
+                                                          AppColors.colorWhite),
+                                                ),
                                               )
                                             ],
-                                          ),
-                                          IconButton(
-                                            onPressed: () {},
-                                            icon: Container(
-                                              padding:
-                                                  const EdgeInsetsDirectional
-                                                      .all(8),
-                                              alignment: Alignment.center,
-                                              decoration: const BoxDecoration(
-                                                  color: AppColors.colorGreen,
-                                                  shape: BoxShape.circle),
-                                              child: const Icon(Icons.call,
-                                                  size: 16,
-                                                  color: AppColors.colorWhite),
-                                            ),
                                           )
                                         ],
                                       ),

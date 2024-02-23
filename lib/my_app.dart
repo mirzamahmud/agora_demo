@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: AppRoute.splashScreen,
       initialBinding: SplashBinding(),
+      defaultTransition: Transition.noTransition,
       getPages: AppRoute.routes,
     );
   }
