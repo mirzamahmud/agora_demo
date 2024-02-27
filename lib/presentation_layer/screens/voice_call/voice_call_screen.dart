@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:agora_demo/core/utils/color/app_colors.dart';
+import 'package:agora_demo/core/utils/image/app_icons.dart';
 import 'package:agora_demo/core/utils/image/app_images.dart';
 import 'package:agora_demo/presentation_layer/ui/font_style.dart';
 import 'package:flutter/material.dart';
@@ -97,13 +98,45 @@ class _VoiceCallScreenState extends State<VoiceCallScreen> {
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 padding: const EdgeInsetsDirectional.symmetric(
-                    vertical: 12, horizontal: 12),
+                    vertical: 8, horizontal: 8),
                 decoration: BoxDecoration(
-                    color: AppColors.colorBlack.withOpacity(0.6),
-                    borderRadius: BorderRadius.circular(12)),
+                    color: AppColors.colorBlack.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(40)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [],
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: Image.asset(AppIcons.cameraOff,
+                          color: AppColors.colorWhite, height: 20, width: 20),
+                      color: AppColors.colorWhite,
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Image.asset(AppIcons.micOff,
+                          color: AppColors.colorWhite, height: 20, width: 20),
+                      color: AppColors.colorWhite,
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Image.asset(AppIcons.lowVolume,
+                          color: AppColors.colorWhite, height: 20, width: 20),
+                      color: AppColors.colorWhite,
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Container(
+                        padding: const EdgeInsetsDirectional.symmetric(
+                            vertical: 8, horizontal: 8),
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                            color: AppColors.colorRed, shape: BoxShape.circle),
+                        child: Image.asset(AppIcons.callCancel,
+                            color: AppColors.colorWhite, height: 20, width: 20),
+                      ),
+                      color: AppColors.colorRed,
+                    )
+                  ],
                 ),
               ),
             )
