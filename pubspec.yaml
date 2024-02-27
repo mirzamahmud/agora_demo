@@ -45,6 +45,8 @@ dependencies:
   api_service_interceptor:
   gap:
   pin_code_fields:
+  permission_handler:
+  firebase_messaging:
 
 dev_dependencies:
   flutter_test:

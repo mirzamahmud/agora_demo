@@ -1,5 +1,4 @@
 import 'package:agora_demo/application_layer/controllers/home/home_controller.dart';
-import 'package:agora_demo/core/route/app_route.dart';
 import 'package:agora_demo/core/utils/color/app_colors.dart';
 import 'package:agora_demo/core/utils/image/app_images.dart';
 import 'package:agora_demo/presentation_layer/ui/font_style.dart';
@@ -85,13 +84,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           physics: const BouncingScrollPhysics(),
                           child: Column(
                             children: List.generate(
-                                homeController.allUsers.length,
+                                homeController.allChannel.length,
                                 (index) => Container(
                                       width: MediaQuery.of(context).size.width,
                                       margin: EdgeInsetsDirectional.only(
                                           bottom: index ==
                                                   homeController
-                                                          .allUsers.length -
+                                                          .allChannel.length -
                                                       1
                                               ? 0
                                               : 12),
@@ -133,9 +132,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     children: [
                                                       Text(
                                                           homeController
-                                                                  .allUsers[
+                                                                  .allChannel[
                                                                       index]
-                                                                  .username ??
+                                                                  .channelID ??
                                                               "",
                                                           overflow: TextOverflow
                                                               .ellipsis,
@@ -145,15 +144,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w600)),
-                                                      const Gap(4),
-                                                      Text(
-                                                        "${homeController.allUsers[index].dialCode}${homeController.allUsers[index].phoneNumber}",
-                                                        style: FontStyle
-                                                            .bodySmall
-                                                            .copyWith(
-                                                                color: AppColors
-                                                                    .colorGrey),
-                                                      )
                                                     ],
                                                   ),
                                                 )
@@ -161,55 +151,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                           ),
                                           const Gap(12),
-                                          Row(
-                                            children: [
-                                              IconButton(
-                                                onPressed: () => Get.toNamed(
-                                                    AppRoute.voiceCallScreen,
-                                                    arguments: [
-                                                      homeController
-                                                          .allUsers[index]
-                                                          .username
-                                                    ]),
-                                                icon: Container(
-                                                  padding:
-                                                      const EdgeInsetsDirectional
-                                                          .all(8),
-                                                  alignment: Alignment.center,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                          color: AppColors
-                                                              .colorGreen,
-                                                          shape:
-                                                              BoxShape.circle),
-                                                  child: const Icon(Icons.call,
-                                                      size: 16,
-                                                      color:
-                                                          AppColors.colorWhite),
-                                                ),
-                                              ),
-                                              const Gap(4),
-                                              IconButton(
-                                                onPressed: () {},
-                                                icon: Container(
-                                                  padding:
-                                                      const EdgeInsetsDirectional
-                                                          .all(8),
-                                                  alignment: Alignment.center,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                          color: AppColors
-                                                              .colorOrange,
-                                                          shape:
-                                                              BoxShape.circle),
-                                                  child: const Icon(
-                                                      Icons.video_call,
-                                                      size: 16,
-                                                      color:
-                                                          AppColors.colorWhite),
-                                                ),
-                                              )
-                                            ],
+                                          IconButton(
+                                            onPressed: () {
+                                              homeController
+                                                  .createChannel(index);
+                                            },
+                                            icon: Container(
+                                              padding:
+                                                  const EdgeInsetsDirectional
+                                                      .all(8),
+                                              alignment: Alignment.center,
+                                              decoration: const BoxDecoration(
+                                                  color: AppColors.colorGreen,
+                                                  shape: BoxShape.circle),
+                                              child: const Icon(Icons.call,
+                                                  size: 16,
+                                                  color: AppColors.colorWhite),
+                                            ),
                                           )
                                         ],
                                       ),

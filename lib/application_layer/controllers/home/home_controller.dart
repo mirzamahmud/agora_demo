@@ -1,3 +1,5 @@
+import 'package:agora_demo/core/route/app_route.dart';
+import 'package:agora_demo/domain_layer/channel/channel_model.dart';
 import 'package:agora_demo/domain_layer/user/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -37,24 +39,16 @@ class HomeController extends GetxController {
     }
   }
 
-  /// get all users
-  List<UserModel> allUsers = [];
+  /// get all channel
+  List<ChannelModel> allChannel = [];
+
   getOtherUsers() async {
-    // final result = await firebaseFirestore.collection("users").get();
+    final result = await firebaseFirestore.collection("room").get();
+    final channelData =
+        result.docs.map((e) => ChannelModel.fromMap(e)).toList();
 
-    // final otherUsers =
-    //     result.docs.where((element) => element.id != user!.uid).toList();
-
-    // userData = otherUsers;
-
-    final result = await firebaseFirestore.collection("users").get();
-    final usersData = result.docs
-        .map((e) => UserModel.fromMap(e))
-        .where((element) => element.userID != user!.uid)
-        .toList();
-
-    if (usersData.isNotEmpty) {
-      allUsers.addAll(usersData);
+    if (channelData.isNotEmpty) {
+      allChannel.addAll(channelData);
     } else {}
   }
 
@@ -74,5 +68,12 @@ class HomeController extends GetxController {
     } else {
       greetings = "Good Night";
     }
+  }
+
+  void createChannel(int index) async {
+    print("channelId : ${allChannel[index].channelID.toString()}");
+    Get.toNamed(AppRoute.callScreen,
+        arguments: allChannel[index].channelID.toString());
+    update();
   }
 }

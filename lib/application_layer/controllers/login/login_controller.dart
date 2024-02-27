@@ -56,6 +56,9 @@ class LoginController extends GetxController {
     update();
   }
 
+  String channelID = "";
+  bool channelAlreadyExist = false;
+
   addUserInfo() async {
     User? user = auth.currentUser;
     UserModel userModel = UserModel();
@@ -70,6 +73,21 @@ class LoginController extends GetxController {
           .collection("users")
           .doc(user.uid)
           .set(userModel.toMap());
+
+      if (channelAlreadyExist) {
+        Fluttertoast.showToast(
+            msg: "Already Created a Channel",
+            backgroundColor: AppColors.colorRed,
+            textColor: AppColors.colorWhite,
+            gravity: ToastGravity.BOTTOM,
+            toastLength: Toast.LENGTH_LONG);
+      } else {
+        await firebaseFirestore
+            .collection("room")
+            .doc()
+            .set({"channelID": "${user.uid}-AD24"});
+        channelAlreadyExist = true;
+      }
 
       Get.offAndToNamed(AppRoute.homeScreen);
 
@@ -89,6 +107,8 @@ class LoginController extends GetxController {
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM);
     }
+
+    update();
   }
 
   bool isVerify = false;
