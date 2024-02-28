@@ -15,7 +15,7 @@ class _CallScreenState extends State<CallScreen> {
   int? _remoteUid;
   bool _localUserJoined = false;
   late RtcEngine _engine;
-  String? channelID;
+  late String channelID;
 
   @override
   void initState() {
@@ -69,7 +69,7 @@ class _CallScreenState extends State<CallScreen> {
 
     await _engine.joinChannel(
       token: token,
-      channelId: channelID ?? "",
+      channelId: channelID,
       uid: 0,
       options: const ChannelMediaOptions(),
     );

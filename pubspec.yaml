@@ -39,7 +39,7 @@ dependencies:
   firebase_auth:
   cloud_firestore:
   get:
-  agora_rtc_engine:
+  agora_rtc_engine: 
   fluttertoast:
   shared_preferences:
   api_service_interceptor:

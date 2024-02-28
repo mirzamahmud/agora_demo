@@ -71,7 +71,6 @@ class HomeController extends GetxController {
   }
 
   void createChannel(int index) async {
-    print("channelId : ${allChannel[index].channelID.toString()}");
     Get.toNamed(AppRoute.callScreen,
         arguments: allChannel[index].channelID.toString());
     update();
