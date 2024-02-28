@@ -102,7 +102,7 @@ class _CallScreenState extends State<CallScreen> {
                       controller: VideoViewController.remote(
                         rtcEngine: _engine,
                         canvas: VideoCanvas(uid: _remoteUid),
-                        connection: RtcConnection(channelId: channelID ?? ""),
+                        connection: RtcConnection(channelId: channelID),
                       ),
                     )
                   : const Text(
