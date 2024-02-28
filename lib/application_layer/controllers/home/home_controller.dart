@@ -3,6 +3,7 @@ import 'package:agora_demo/domain_layer/channel/channel_model.dart';
 import 'package:agora_demo/domain_layer/user/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
@@ -20,6 +21,7 @@ class HomeController extends GetxController {
 
     setGreetings();
     await fetchData();
+    await getRoomInfo();
     await getOtherUsers();
 
     isLoading = false;
@@ -42,7 +44,7 @@ class HomeController extends GetxController {
   /// get all channel
   List<ChannelModel> allChannel = [];
 
-  getOtherUsers() async {
+  getRoomInfo() async {
     final result = await firebaseFirestore.collection("room").get();
     final channelData =
         result.docs.map((e) => ChannelModel.fromMap(e)).toList();
@@ -74,5 +76,34 @@ class HomeController extends GetxController {
     Get.toNamed(AppRoute.callScreen,
         arguments: allChannel[index].channelID.toString());
     update();
+  }
+
+  List<String> tabList = ["Chat", "Call"];
+  int selectedTab = 0;
+  PageController pageController = PageController();
+
+  void changeSelectedTab(int index) {
+    selectedTab = index;
+    pageController.jumpToPage(selectedTab);
+    update();
+  }
+
+  void changePage(int pageIndex) {
+    selectedTab = pageIndex;
+    update();
+  }
+
+  List<UserModel> userData = [];
+
+  getOtherUsers() async {
+    final result = await firebaseFirestore.collection("users").get();
+    final tempList = result.docs
+        .map((e) => UserModel.fromMap(e))
+        .where((element) => element.userID != user!.uid)
+        .toList();
+
+    if (tempList.isNotEmpty) {
+      userData.addAll(tempList);
+    }
   }
 }
