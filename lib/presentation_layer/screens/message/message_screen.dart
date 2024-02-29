@@ -1,11 +1,11 @@
 import 'package:agora_demo/application_layer/controllers/message/message_controller.dart';
 import 'package:agora_demo/core/utils/color/app_colors.dart';
 import 'package:agora_demo/core/utils/image/app_images.dart';
+import 'package:agora_demo/domain_layer/message/message.dart';
 import 'package:agora_demo/presentation_layer/ui/font_style.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 
@@ -24,7 +24,7 @@ class _MessageScreenState extends State<MessageScreen> {
   void initState() {
     chatPartnerName = Get.arguments[0];
     chatPartnerId = Get.arguments[1];
-    getMessages();
+    getMessages(chatPartnerId);
     super.initState();
   }
 
@@ -91,22 +91,46 @@ class _MessageScreenState extends State<MessageScreen> {
                       child: Column(
                         children: List.generate(
                             messageList.length,
-                            (index) => Container(
-                                  margin: EdgeInsetsDirectional.only(
-                                      bottom: index == messageList.length - 1
-                                          ? 0
-                                          : 8),
-                                  padding:
-                                      const EdgeInsetsDirectional.symmetric(
-                                          vertical: 12, horizontal: 12),
-                                  alignment: Alignment.centerLeft,
-                                  decoration: BoxDecoration(
-                                      color: AppColors.colorGreen,
-                                      borderRadius: BorderRadius.circular(12)),
-                                  child: Text(
-                                    messageList[index]['message'],
-                                    style: FontStyle.bodyMedium
-                                        .copyWith(color: Colors.white),
+                            (index) => Align(
+                                  alignment: messageList[index].senderId ==
+                                          FirebaseAuth.instance.currentUser?.uid
+                                      ? Alignment.topRight
+                                      : Alignment.topLeft,
+                                  child: Container(
+                                    margin: const EdgeInsetsDirectional.only(
+                                        bottom: 12),
+                                    padding:
+                                        const EdgeInsetsDirectional.symmetric(
+                                            vertical: 16, horizontal: 12),
+                                    decoration: BoxDecoration(
+                                        borderRadius: messageList[index]
+                                                    .senderId ==
+                                                FirebaseAuth
+                                                    .instance.currentUser?.uid
+                                            ? const BorderRadius.only(
+                                                topLeft: Radius.circular(12),
+                                                topRight: Radius.circular(12),
+                                                bottomLeft: Radius.circular(12))
+                                            : const BorderRadius.only(
+                                                topLeft: Radius.circular(12),
+                                                topRight: Radius.circular(12),
+                                                bottomRight:
+                                                    Radius.circular(12)),
+                                        color: messageList[index].senderId ==
+                                                FirebaseAuth
+                                                    .instance.currentUser?.uid
+                                            ? AppColors.colorGreen
+                                            : AppColors.colorGrey
+                                                .withOpacity(0.2)),
+                                    child: Text(
+                                      messageList[index].content,
+                                      style: FontStyle.bodyMedium.copyWith(
+                                          color: messageList[index].senderId ==
+                                                  FirebaseAuth
+                                                      .instance.currentUser?.uid
+                                              ? Colors.white
+                                              : Colors.black),
+                                    ),
                                   ),
                                 )),
                       ),
@@ -147,9 +171,9 @@ class _MessageScreenState extends State<MessageScreen> {
                     const Gap(16),
                     IconButton(
                         alignment: Alignment.center,
-                        onPressed: () async {
-                          await sendMessage(
-                              controller.messageController.text.trim());
+                        onPressed: () {
+                          sendMessge(controller.messageController.text.trim(),
+                              chatPartnerId);
 
                           controller.messageController.text = "";
                         },
@@ -177,67 +201,65 @@ class _MessageScreenState extends State<MessageScreen> {
     return "${currentUserID}_$chatPartnerId";
   }
 
-  Future<void> sendMessage(String messageContent) async {
-    final currentUserId = getCurrentUserID();
-    final partnerId = chatPartnerId;
-    final chatId = generateUniqueChatId(currentUserId, partnerId);
-
-    final firestore = FirebaseFirestore.instance;
-
-    try {
-      await firestore
-          .collection("chats")
-          .doc(chatId)
-          .collection("messages")
-          .add({
-        "messageFrom": currentUserId,
-        "messageTo": partnerId,
-        "message": messageContent,
-        "dateTime": DateTime.now()
-            .toIso8601String(), // Use Timestamp for consistent representation
-      });
-    } on FirebaseException catch (e) {
-      Fluttertoast.showToast(
-          msg: e.toString(),
-          backgroundColor: AppColors.colorRed,
-          textColor: AppColors.colorWhite,
-          gravity: ToastGravity.BOTTOM,
-          toastLength: Toast.LENGTH_LONG);
-    }
+  sendMessge(String content, String receiverID) async {
+    final message = Message(
+      content: content,
+      sentTime: DateTime.now(),
+      receiverId: receiverID,
+      messageType: MessageType.text,
+      senderId: FirebaseAuth.instance.currentUser!.uid,
+    );
+    await addMessageToChat(receiverID, message);
   }
 
-  List<Map<String, dynamic>> messageList = [];
+  Future<void> addMessageToChat(
+    String receiverId,
+    Message message,
+  ) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('chat')
+        .doc(receiverId)
+        .collection('messages')
+        .add(message.toJson());
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(receiverId)
+        .collection('chat')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('messages')
+        .add(message.toJson());
+  }
+
+  List<Message> messageList = [];
   bool isLoading = false;
 
-  void getMessages() async {
+  List<Message> getMessages(String receiverID) {
     setState(() {
       isLoading = true;
     });
 
-    final currentUserID = getCurrentUserID();
-    final partnerID = chatPartnerId;
-    final chatId = generateUniqueChatId(currentUserID, partnerID);
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('chat')
+        .doc(receiverID)
+        .collection('messages')
+        .orderBy('sentTime', descending: false)
+        .snapshots(includeMetadataChanges: true)
+        .listen((messages) {
+      messageList =
+          messages.docs.map((doc) => Message.fromJson(doc.data())).toList();
 
-    final firestore = FirebaseFirestore.instance;
-
-    try {
-      final querySnapshot = await firestore
-          .collection("chats")
-          .doc(chatId)
-          .collection("messages")
-          .orderBy("dateTime")
-          .get();
-
-      final messages = querySnapshot.docs.map((doc) => doc.data()).toList();
-      if (messages.isNotEmpty) {
-        messageList.addAll(messages);
-      }
-    } on FirebaseException catch (e) {
-      debugPrint(e.message);
-    }
+      setState(() {});
+    });
 
     setState(() {
       isLoading = false;
     });
+
+    return messageList;
   }
 }
